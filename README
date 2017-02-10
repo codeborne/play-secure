@@ -1,3 +1,14 @@
 This is clone of Play! built-in "secure" module with few modifications:
 
 1. All Security controller methods are non-static
+
+
+## How to
+
+1. Add these lines to your `conf/routes`:
+
+```
+GET			/login			Secure.login
+POST    /login      Secure.authenticate
+GET     /logout     Secure.logout
+```
