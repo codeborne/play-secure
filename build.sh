@@ -23,7 +23,7 @@ elif [ -e $REPO ]; then
   echo ""
   echo ""
   echo " ********************************************************* "
-  cp lib/$$MODULE.jar $TARGET || exit $?
+  cp lib/$MODULE.jar $TARGET || exit $?
   echo "Published $TARGET"
   echo " ********************************************************* "
   echo ""
