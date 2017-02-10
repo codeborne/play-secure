@@ -6,16 +6,17 @@ import play.Play;
 import play.mvc.*;
 import play.data.validation.*;
 import play.libs.*;
+import play.rebel.RebelController;
 import play.utils.*;
 
-public class Secure extends Controller {
+public class Secure extends RebelController {
 
     @Before(unless={"login", "authenticate", "logout"})
     static void checkAccess() throws Throwable {
         // Authentication
-        if(!session.contains("username")) {
-            flash.put("url", "GET".equals(request.method) ? request.url : Play.ctxPath + "/"); // seems a good default
-            login();
+        if(!session().contains("username")) {
+            flash().put("url", "GET".equals(request().method) ? request().url : Play.ctxPath + "/"); // seems a good default
+            redirect("/login");
         }
         // Checks
         Check check = getActionAnnotation(Check.class);
@@ -39,7 +40,7 @@ public class Secure extends Controller {
 
     // ~~~ Login
 
-    public static void login() throws Throwable {
+    public void login() throws Throwable {
         Http.Cookie remember = request.cookies.get("rememberme");
         if(remember != null) {
             int firstIndex = remember.value.indexOf("-");
@@ -74,40 +75,40 @@ public class Secure extends Controller {
             // This is the official method name
             allowed = (Boolean)Security.invoke("authenticate", username, password);
         }
-        if(validation.hasErrors() || !allowed) {
-            flash.keep("url");
-            flash.error("secure.error");
-            params.flash();
-            login();
+        if (Validation.hasErrors() || !allowed) {
+            flash().keep("url");
+            flash().error("secure.error");
+            params().flash();
+            redirect("/login");
         }
         // Mark user as connected
-        session.put("username", username);
+        session().put("username", username);
         // Remember if needed
         if(remember) {
             Date expiration = new Date();
             String duration = Play.configuration.getProperty("secure.rememberme.duration","30d"); 
             expiration.setTime(expiration.getTime() + ((long)Time.parseDuration(duration)) * 1000L );
-            response.setCookie("rememberme", Crypto.sign(username + "-" + expiration.getTime()) + "-" + username + "-" + expiration.getTime(), duration);
+            response().setCookie("rememberme", Crypto.sign(username + "-" + expiration.getTime()) + "-" + username + "-" + expiration.getTime(), duration);
 
         }
         // Redirect to the original URL (or /)
         redirectToOriginalURL();
     }
 
-    public static void logout() throws Throwable {
+    public void logout() throws Throwable {
         Security.invoke("onDisconnect");
         session.clear();
         response.removeCookie("rememberme");
         Security.invoke("onDisconnected");
         flash.success("secure.logout");
-        login();
+        redirect("/login");
     }
 
     // ~~~ Utils
 
     static void redirectToOriginalURL() throws Throwable {
         Security.invoke("onAuthenticated");
-        String url = flash.get("url");
+        String url = flash().get("url");
         if(url == null) {
             url = Play.ctxPath + "/";
         }

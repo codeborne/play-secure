@@ -1,4 +1,12 @@
-self: play-secure -> secure 0.2
+self: play-secure -> secure 0.3
 
 require:
     - play 1.5+
+    - play-codeborne -> rebel 0.6.5
+
+repositories:
+    - codeborne-modules-jars:
+        type: http
+        artifact: https://repo.codeborne.com/play-[module]/[module]-[revision].jar
+        contains:
+            - play-codeborne -> rebel
