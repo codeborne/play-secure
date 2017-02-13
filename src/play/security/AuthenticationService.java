@@ -14,4 +14,8 @@ public class AuthenticationService {
   public boolean isConnected() {
       return Scope.Session.current().contains("username");
   }
+
+  public String connected() {
+      return Scope.Session.current().get("username");
+  }
 }
