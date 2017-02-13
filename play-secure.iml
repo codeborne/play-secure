@@ -11,6 +11,7 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module" module-name="play" />
+    <orderEntry type="module" module-name="play-rebel" />
     <orderEntry type="module-library">
       <library>
         <CLASSES>

@@ -1,5 +1,11 @@
 ## Changelog
 
+### 0.4  (2017-02-13)
+
+ * remove class controllers.Secure
+ * add class play.security.AuthenticationService
+ * add class play.security.AuthorizationService
+
 ### 0.3  (2017-02-10)
 
  * make controllers.Secure work without Play enhancers
